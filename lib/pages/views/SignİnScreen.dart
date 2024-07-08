@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:app_set_id/app_set_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:testt/pages/views/GetPasswordScreen.dart';
 import 'package:testt/pages/views/LoginScreen.dart';
 
 import '../../model/il-ilce-model.dart';
+import '../../model/users_model.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -20,9 +23,11 @@ TextEditingController konumilController = TextEditingController();
 TextEditingController konumilceController = TextEditingController();
 
 class _SigninScreenState extends State<SigninScreen> {
+  String _cihazid = 'cihaz kimligi alınıyor';
+  late final Users users;
   final formKey = GlobalKey<FormState>();
-  String? _secileIl;
-  String? _secilenIlce;
+  String? secileIl;
+  String? secilenIlce;
   List<Ililce> ililceList = [];
 
 //DATALARI YÜKLEMEMEMİZİ SAĞLAR.
@@ -34,19 +39,42 @@ class _SigninScreenState extends State<SigninScreen> {
     });
   }
 
+//2.SAYFAYA VERİ İLE GEÇME
+  void _navigateToPasswordPage() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GetPasswordScreen(
+              adSoyad: adSoyadController.text,
+              telNo: tellnoController.text,
+              il: secileIl!,
+              ilce: secilenIlce!,
+              cihazid: _cihazid),
+        ));
+  }
+
   //BU BİZE SEÇTİĞİMİZ İLDEN İLÇELERİ SEÇMEMİZİ SAĞLAR.
-  List<String> get _ilceler {
-    if (_secileIl != null) {
-      return ililceList.firstWhere((city) => city.il == _secileIl).ilceleri!;
+  List<String> get ilceler {
+    if (secileIl != null) {
+      return ililceList.firstWhere((city) => city.il == secileIl).ilceleri!;
     } else {
       return [];
     }
+  }
+
+  //CİHAZ_İD ALMA
+  Future<String?> _getDeviceId(String cihazid) async {
+    cihazid = (await AppSetId().getIdentifier())!;
+    print('cihaz id $cihazid');
+    return cihazid;
   }
 
   //İNİT ETMEMİZİ SAĞLAR
   @override
   void initState() {
     loadililceData();
+    _getDeviceId(_cihazid);
+
     super.initState();
   }
 
@@ -143,7 +171,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                 validator: (value) => value == null
                                     ? 'Alanı Boş Bırakmayınız!'
                                     : null,
-                                hint: Text(_secileIl ?? 'İl'),
+                                hint: Text(secileIl ?? 'İl'),
                                 items: ililceList.map<DropdownMenuItem<String>>(
                                     (Ililce city) {
                                   return DropdownMenuItem(
@@ -153,8 +181,8 @@ class _SigninScreenState extends State<SigninScreen> {
                                 }).toList(),
                                 onChanged: (String? value) {
                                   setState(() {
-                                    _secileIl = value;
-                                    _secilenIlce = null;
+                                    secileIl = value;
+                                    secilenIlce = null;
                                   });
                                 },
                               ),
@@ -166,8 +194,8 @@ class _SigninScreenState extends State<SigninScreen> {
                                 validator: (value) => value == null
                                     ? 'Alanı Boş Bırakmayınız!'
                                     : null,
-                                hint: Text(_secilenIlce ?? 'İlçe'),
-                                items: _ilceler.map<DropdownMenuItem<String>>(
+                                hint: Text(secilenIlce ?? 'İlçe'),
+                                items: ilceler.map<DropdownMenuItem<String>>(
                                     (String ilce) {
                                   return DropdownMenuItem(
                                     value: ilce,
@@ -176,8 +204,8 @@ class _SigninScreenState extends State<SigninScreen> {
                                 }).toList(),
                                 onChanged: (String? value) {
                                   setState(() {
-                                    _secilenIlce = value;
-                                    print("$_secileIl,$_secilenIlce");
+                                    secilenIlce = value;
+                                    print("$secileIl,$secilenIlce");
                                   });
                                 },
                               ),
@@ -191,11 +219,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const GetPasswordScreen(),
-                            ));
+                        _navigateToPasswordPage();
                       }
                     },
                     style: const ButtonStyle(

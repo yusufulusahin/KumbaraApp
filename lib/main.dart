@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:testt/pages/views/GetPasswordScreen.dart';
+import 'package:testt/pages/views/Sign%C4%B0nScreen.dart';
 
 import 'pages/views/LoginScreen.dart';
 
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter KumbaraApp',
-      home: LoginScreen(),
+      home: SigninScreen(),
     );
   }
 }

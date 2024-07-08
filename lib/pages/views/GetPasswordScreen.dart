@@ -3,7 +3,19 @@ import 'package:flutter/material.dart';
 import '../../component/CustomPinPut.dart';
 
 class GetPasswordScreen extends StatefulWidget {
-  const GetPasswordScreen({super.key});
+  const GetPasswordScreen(
+      {super.key,
+      required this.adSoyad,
+      required this.telNo,
+      required this.il,
+      required this.ilce,
+      required this.cihazid});
+
+  final String adSoyad;
+  final String telNo;
+  final String il;
+  final String ilce;
+  final String cihazid;
 
   @override
   State<GetPasswordScreen> createState() => _GetPasswordScreenState();
@@ -22,6 +34,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
     c1 = TextEditingController();
     c2 = TextEditingController();
     c3 = TextEditingController();
+
     super.initState();
   }
 
@@ -72,7 +85,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
                     height: 120,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: IptalButonu(context),
+                      child: iptalButonu(context),
                     ),
                   ),
                 ),
@@ -81,7 +94,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
                     height: 120,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: TamamButonu(),
+                      child: tamamButonu(),
                     ),
                   ),
                 )
@@ -94,7 +107,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
   }
 
   //TAMAM BUTONU
-  ElevatedButton TamamButonu() {
+  ElevatedButton tamamButonu() {
     return ElevatedButton(
         style: const ButtonStyle(
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -109,7 +122,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
   }
 
   //İPTAL BUTONU
-  ElevatedButton IptalButonu(BuildContext context) {
+  ElevatedButton iptalButonu(BuildContext context) {
     return ElevatedButton(
         statesController: WidgetStatesController(),
         style: const ButtonStyle(
