@@ -1,7 +1,8 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:app_set_id/app_set_id.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:testt/pages/views/GetPasswordScreen.dart';
@@ -23,7 +24,7 @@ TextEditingController konumilController = TextEditingController();
 TextEditingController konumilceController = TextEditingController();
 
 class _SigninScreenState extends State<SigninScreen> {
-  String _cihazid = 'cihaz kimligi alınıyor';
+  String _cihazid = 'Cihaz Kimliği Alınıyor';
   late final Users users;
   final formKey = GlobalKey<FormState>();
   String? secileIl;
@@ -66,13 +67,15 @@ class _SigninScreenState extends State<SigninScreen> {
   Future<String?> _getDeviceId(String cihazid) async {
     cihazid = (await AppSetId().getIdentifier())!;
     print('cihaz id $cihazid');
-    return cihazid;
+    _cihazid = cihazid;
+    return _cihazid;
   }
 
   //İNİT ETMEMİZİ SAĞLAR
   @override
   void initState() {
     loadililceData();
+
     _getDeviceId(_cihazid);
 
     super.initState();

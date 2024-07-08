@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:testt/pages/views/GetPasswordScreen.dart';
 import 'package:testt/pages/views/Sign%C4%B0nScreen.dart';
-
-import 'pages/views/LoginScreen.dart';
 
 void main() {
   runApp(const MyApp());

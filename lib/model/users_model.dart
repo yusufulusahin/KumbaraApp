@@ -36,4 +36,9 @@ class Users {
       cihazid: json['cihazid'],
     );
   }
+  //PRİNT METODUNDA USER'İ YAZDIRMAK İÇİN KULLANILIR
+  @override
+  String toString() {
+    return 'User{fullName: $adSoyad, phoneNumber: $telNo, city: $il, district: $ilce, password: $sifre, deviceId: $cihazid}';
+  }
 }

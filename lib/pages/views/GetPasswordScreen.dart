@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../component/CustomPinPut.dart';
+import '../../model/users_model.dart';
 
 class GetPasswordScreen extends StatefulWidget {
   const GetPasswordScreen(
@@ -38,7 +39,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
     super.initState();
   }
 
-  void passwordBirlestir() {
+  String passwordBirlestir() {
     final List<int> password1 = [];
 
     var p1 = int.parse(c0.text);
@@ -52,9 +53,22 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
     password1.add(p4);
 
     //passwordu birleştiriyor String olarak
-    var password2 = password1.join();
-
+    String password2 = password1.join();
     print(password2);
+
+    return password2;
+  }
+
+  void _saveUser() {
+    Users users = Users(
+        adSoyad: widget.adSoyad,
+        telNo: widget.telNo,
+        il: widget.il,
+        ilce: widget.ilce,
+        sifre: passwordBirlestir(),
+        cihazid: widget.cihazid);
+
+    print(users);
   }
 
   @override
@@ -114,6 +128,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(10))))),
         onPressed: () {
           passwordBirlestir();
+          _saveUser();
         },
         child: const Text(
           'Tamam',
