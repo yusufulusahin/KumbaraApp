@@ -47,7 +47,7 @@ class _SigninScreenState extends State<SigninScreen> {
         MaterialPageRoute(
           builder: (context) => GetPasswordScreen(
               adSoyad: adSoyadController.text,
-              telNo: tellnoController.text,
+              telNo: telnoController.text,
               il: secileIl!,
               ilce: secilenIlce!,
               cihazid: _cihazid),
