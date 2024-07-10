@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:testt/pages/views/LoginScreen.dart';
 
@@ -59,6 +60,44 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
       );
     } catch (e) {
       print('Kullanıcı Kaydedilirken bir Sorun Oluştu $e');
+    }
+  }
+
+  Future<void> kayit(Users user) async {
+    try {
+      // Telefon numarasını kontrol et
+      var telQuery = await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .where('telNo', isEqualTo: user.telNo)
+          .get();
+      if (telQuery.docs.isNotEmpty) {
+        print('Bu telefon numarası zaten kayıtlı');
+        return;
+      }
+
+      var cihazQuery = await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .where('cihazid', isEqualTo: user.cihazid)
+          .get();
+      if (cihazQuery.docs.isNotEmpty) {
+        print('Bu cihaz kimliği zaten kayıtlı');
+        return;
+      }
+
+      await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .doc(user.telNo)
+          .set(user.toJson());
+      print('Kullanıcı başarı ile kaydedildi.');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+        (Route<dynamic> route) => false,
+      );
+    } catch (e) {
+      print('Kullanıcı kaydedilemedi: $e');
     }
   }
 
@@ -160,7 +199,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
               cihazid: widget.cihazid);
           print(users);
 
-          registerUser(users);
+          kayit(users);
         },
         child: const Text(
           'Tamam',
