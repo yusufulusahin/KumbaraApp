@@ -12,10 +12,10 @@ class Ililce {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['il'] = this.il;
-    data['plaka'] = this.plaka;
-    data['ilceleri'] = this.ilceleri;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['il'] = il;
+    data['plaka'] = plaka;
+    data['ilceleri'] = ilceleri;
     return data;
   }
 }

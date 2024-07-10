@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:testt/pages/views/LoginScreen.dart';
 
 import '../../component/CustomPinPut.dart';
 import '../../model/users_model.dart';
@@ -37,6 +40,26 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
     c3 = TextEditingController();
 
     super.initState();
+  }
+
+  Future<void> registerUser(Users user) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .doc(user.telNo)
+          .set(user.toJson());
+      print('Kullanıcı Başarı ile Kaydedildi');
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+        (Route<dynamic> route) => false,
+      );
+    } catch (e) {
+      print('Kullanıcı Kaydedilirken bir Sorun Oluştu $e');
+    }
   }
 
   String passwordBirlestir() {
@@ -128,7 +151,16 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(10))))),
         onPressed: () {
           passwordBirlestir();
-          _saveUser();
+          Users users = Users(
+              adSoyad: widget.adSoyad,
+              telNo: widget.telNo,
+              il: widget.il,
+              ilce: widget.ilce,
+              sifre: passwordBirlestir(),
+              cihazid: widget.cihazid);
+          print(users);
+
+          registerUser(users);
         },
         child: const Text(
           'Tamam',

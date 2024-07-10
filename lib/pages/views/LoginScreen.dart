@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:testt/pages/views/HomeScreen.dart';
@@ -12,44 +15,73 @@ class LoginScreen extends StatefulWidget {
 
 TextEditingController tellnoController = TextEditingController();
 TextEditingController pasController = TextEditingController();
-String errrorMesage = 'Şifre 10 Haneli Olmalıdır.';
 
 class _LoginScreenState extends State<LoginScreen> {
-  void controlTel(String phoneNumberControl) {
-    setState(() {
-      if (phoneNumberControl.length != 10) {
-        errrorMesage = '10 Haneli Bir Telefon Numarası Girin!';
+  late String telno, sifre;
+  final _formkey = GlobalKey<FormState>();
+  Future<void> loginUser(String telNo, String sifre) async {
+    try {
+      var userQuery = await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .where('telNo', isEqualTo: telNo)
+          .where('sifre', isEqualTo: sifre)
+          .get();
+
+      if (userQuery.docs.isNotEmpty) {
+        print('Kullanıcı başarı ile giriş yaptı');
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Homescreen(),
+            ));
       } else {
-        errrorMesage = '';
+        print('Telefon No Veya Şifre Hatalı');
       }
-    });
+    } catch (e) {
+      print('Giriş Başarısız $e');
+    }
   }
+
+  // void controlTel(String phoneNumberControl) {
+  //   setState(() {
+  //     if (phoneNumberControl.length != 10) {
+  //       errrorMesage = '10 Haneli Bir Telefon Numarası Girin!';
+  //     } else {
+  //       errrorMesage = '';
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 226, 225, 225),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Center(
-              child: Text('Hoş geldiniz !',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayLarge!
-                      .copyWith(fontWeight: FontWeight.bold)),
+      body: Form(
+        key: _formkey,
+        child: Column(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Text('Hoş geldiniz !',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge!
+                        .copyWith(fontWeight: FontWeight.bold)),
+              ),
             ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Form(
+            Expanded(
+              flex: 3,
               child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0, right: 20),
-                    child: TextField(
-                      onChanged: controlTel,
+                    child: TextFormField(
+                      onSaved: (newValue) => telno = newValue!,
+                      validator: (value) => value == null || value.length < 10
+                          ? '10 Haneli Bir Telefon Numarası Girin! '
+                          : null,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(10),
@@ -70,7 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 200,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: TextField(
+                      child: TextFormField(
+                        onSaved: (newValue) => sifre = newValue!,
+                        validator: (value) => value == null || value.length < 4
+                            ? 'Şifrenizi Girin!'
+                            : null,
                         style: Theme.of(context).textTheme.displaySmall,
                         textAlign: TextAlign.center,
                         maxLength: 4,
@@ -85,20 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      if (tellnoController.text.length == 10) {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Homescreen()), (route) {
-                          return false;
-                        });
-                      } else {
-                        controlTel(tellnoController.text);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(errrorMesage),
-                          duration: const Duration(seconds: 2),
-                        ));
+                    onPressed: () async {
+                      if (_formkey.currentState?.validate() ?? false) {
+                        _formkey.currentState?.save();
+                        print('$telno ve $sifre');
+                        await loginUser(telno, sifre);
                       }
                     },
                     style: const ButtonStyle(
@@ -142,9 +169,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 ],
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
