@@ -114,7 +114,6 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String sifre;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 226, 225, 225),
       appBar: AppBar(
