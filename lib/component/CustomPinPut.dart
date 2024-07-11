@@ -35,7 +35,8 @@ class _CustomPinPutState extends State<CustomPinPut> {
         SizedBox(
           height: 100,
           width: 80,
-          child: TextField(
+          child: TextFormField(
+            validator: (value) => value == null ? '' : null,
             controller: widget.c0,
             onChanged: (value) {
               if (value.length == 1) {
@@ -57,7 +58,8 @@ class _CustomPinPutState extends State<CustomPinPut> {
         SizedBox(
           height: 100,
           width: 80,
-          child: TextField(
+          child: TextFormField(
+            validator: (value) => value == null ? '' : null,
             controller: widget.c1,
             onChanged: (value) {
               if (value.length == 1) {
@@ -79,7 +81,8 @@ class _CustomPinPutState extends State<CustomPinPut> {
         SizedBox(
           height: 100,
           width: 80,
-          child: TextField(
+          child: TextFormField(
+            validator: (value) => value == null ? '' : null,
             controller: widget.c2,
             onChanged: (value) {
               if (value.length == 1) {
@@ -101,7 +104,8 @@ class _CustomPinPutState extends State<CustomPinPut> {
         SizedBox(
           height: 100,
           width: 80,
-          child: TextField(
+          child: TextFormField(
+            validator: (value) => value == null ? '' : null,
             controller: widget.c3,
             onChanged: (value) {
               if (value.length == 1) {

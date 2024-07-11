@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:testt/component/CustomSnackBar.dart';
 import 'package:testt/pages/views/HomeScreen.dart';
 import 'package:testt/pages/views/Sign%C4%B0nScreen.dart';
 
@@ -15,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 TextEditingController tellnoController = TextEditingController();
 TextEditingController pasController = TextEditingController();
+String _girisYap = 'Giriş Yap';
 
 class _LoginScreenState extends State<LoginScreen> {
   late String telno, sifre;
@@ -28,30 +28,21 @@ class _LoginScreenState extends State<LoginScreen> {
           .get();
 
       if (userQuery.docs.isNotEmpty) {
+        //
         print('Kullanıcı başarı ile giriş yaptı');
-
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => Homescreen(),
             ));
       } else {
+        showCustomSnackBar(context, 'Telefon no Veya Şifre Hatalı!');
         print('Telefon No Veya Şifre Hatalı');
       }
     } catch (e) {
       print('Giriş Başarısız $e');
     }
   }
-
-  // void controlTel(String phoneNumberControl) {
-  //   setState(() {
-  //     if (phoneNumberControl.length != 10) {
-  //       errrorMesage = '10 Haneli Bir Telefon Numarası Girin!';
-  //     } else {
-  //       errrorMesage = '';
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) => value == null || value.length < 10
                           ? '10 Haneli Bir Telefon Numarası Girin! '
                           : null,
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.number,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(10),
                       ],
@@ -108,9 +99,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? 'Şifrenizi Girin!'
                             : null,
                         style: Theme.of(context).textTheme.displaySmall,
+                        keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         maxLength: 4,
                         controller: pasController,
+                        obscureText: true,
                         decoration: const InputDecoration(
                             hintText: 'Şifre',
                             hintStyle: TextStyle(fontSize: 30),
@@ -138,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.all(
                           Radius.circular(20),
                         )))),
-                    child: const Text('Giriş Yap'),
+                    child: Text(_girisYap),
                   ),
                   Expanded(
                     child: Center(

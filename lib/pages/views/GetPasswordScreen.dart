@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:testt/component/CustomSnackBar.dart';
 import 'package:testt/pages/views/LoginScreen.dart';
 
 import '../../component/CustomPinPut.dart';
@@ -45,32 +46,13 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
 
   Future<void> registerUser(Users user) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('AppUsers')
-          .doc(user.telNo)
-          .set(user.toJson());
-      print('Kullanıcı Başarı ile Kaydedildi');
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ),
-        (Route<dynamic> route) => false,
-      );
-    } catch (e) {
-      print('Kullanıcı Kaydedilirken bir Sorun Oluştu $e');
-    }
-  }
-
-  Future<void> kayit(Users user) async {
-    try {
-      // Telefon numarasını kontrol et
+      //CİHAZ İD VE TELEFON NUMARASI YALNIZCA 1 KERE KAYDEDİLEBİLİR VE 1 CİHAZA KAYDEDİLEBİLİR.
       var telQuery = await FirebaseFirestore.instance
           .collection('AppUsers')
           .where('telNo', isEqualTo: user.telNo)
           .get();
       if (telQuery.docs.isNotEmpty) {
+        showCustomSnackBar(context, 'Bu telefon Numarası Zaten Kayıtlı!');
         print('Bu telefon numarası zaten kayıtlı');
         return;
       }
@@ -80,6 +62,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
           .where('cihazid', isEqualTo: user.cihazid)
           .get();
       if (cihazQuery.docs.isNotEmpty) {
+        showCustomSnackBar(context, 'Bu Cihaz Sisteme Zaten Kayıtlı!');
         print('Bu cihaz kimliği zaten kayıtlı');
         return;
       }
@@ -88,6 +71,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
           .collection('AppUsers')
           .doc(user.telNo)
           .set(user.toJson());
+      showCustomSnackBar(context, 'kullanıcı Başarı ile Kaydedildi!');
       print('Kullanıcı başarı ile kaydedildi.');
       Navigator.pushAndRemoveUntil(
         context,
@@ -102,39 +86,35 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
   }
 
   String passwordBirlestir() {
-    final List<int> password1 = [];
+    if (c1.text.isEmpty ||
+        c2.text.isEmpty ||
+        c3.text.isEmpty ||
+        c0.text.isEmpty) {
+      return '';
+    } else {
+      final List<int> password1 = [];
 
-    var p1 = int.parse(c0.text);
-    var p2 = int.parse(c1.text);
-    var p3 = int.parse(c2.text);
-    var p4 = int.parse(c3.text);
+      var p1 = int.parse(c0.text);
+      var p2 = int.parse(c1.text);
+      var p3 = int.parse(c2.text);
+      var p4 = int.parse(c3.text);
 
-    password1.add(p1);
-    password1.add(p2);
-    password1.add(p3);
-    password1.add(p4);
+      password1.add(p1);
+      password1.add(p2);
+      password1.add(p3);
+      password1.add(p4);
 
-    //passwordu birleştiriyor String olarak
-    String password2 = password1.join();
-    print(password2);
+      //passwordu birleştiriyor String olarak
+      String password2 = password1.join();
+      print(password2);
 
-    return password2;
-  }
-
-  void _saveUser() {
-    Users users = Users(
-        adSoyad: widget.adSoyad,
-        telNo: widget.telNo,
-        il: widget.il,
-        ilce: widget.ilce,
-        sifre: passwordBirlestir(),
-        cihazid: widget.cihazid);
-
-    print(users);
+      return password2;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    String sifre;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 226, 225, 225),
       appBar: AppBar(
@@ -190,16 +170,21 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(10))))),
         onPressed: () {
           passwordBirlestir();
-          Users users = Users(
-              adSoyad: widget.adSoyad,
-              telNo: widget.telNo,
-              il: widget.il,
-              ilce: widget.ilce,
-              sifre: passwordBirlestir(),
-              cihazid: widget.cihazid);
-          print(users);
+          if (passwordBirlestir() == '') {
+            showCustomSnackBar(context, 'Lütfen Boş Haneleri Doldurunuz!');
+            return null;
+          } else {
+            Users users = Users(
+                adSoyad: widget.adSoyad,
+                telNo: widget.telNo,
+                il: widget.il,
+                ilce: widget.ilce,
+                sifre: passwordBirlestir(),
+                cihazid: widget.cihazid);
+            print(users);
 
-          kayit(users);
+            registerUser(users);
+          }
         },
         child: const Text(
           'Tamam',
