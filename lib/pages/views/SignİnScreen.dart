@@ -104,7 +104,7 @@ class _SigninScreenState extends State<SigninScreen> {
             ),
             //AD SOYAD BÖLÜMÜ
             Expanded(
-              flex: 3,
+              flex: 5,
               child: Form(
                 key: formKey,
                 child: Column(
@@ -113,6 +113,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       padding: const EdgeInsets.only(
                           left: 20.0, right: 20, bottom: 20),
                       child: TextFormField(
+                        autocorrect: false,
                         validator: (value) {
                           if (value!.isEmpty || value.length < 5) {
                             if (value.isEmpty) {
@@ -225,23 +226,27 @@ class _SigninScreenState extends State<SigninScreen> {
                       ),
                     ),
                     //PASSWORDALMA EKRANINA GİT BUTONU
-                    ElevatedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          _navigateToPasswordPage();
-                        }
-                      },
-                      style: const ButtonStyle(
-                          side: WidgetStatePropertyAll(BorderSide(
-                              color: Color.fromARGB(255, 142, 142, 142))),
-                          backgroundColor: WidgetStatePropertyAll(
-                              Color.fromARGB(255, 226, 225, 225)),
-                          minimumSize: WidgetStatePropertyAll(Size(220, 70)),
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          )))),
-                      child: const Text('Devam'),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            _navigateToPasswordPage();
+                          }
+                        },
+                        style: const ButtonStyle(
+                            side: WidgetStatePropertyAll(BorderSide(
+                                color: Color.fromARGB(255, 142, 142, 142))),
+                            backgroundColor: WidgetStatePropertyAll(
+                                Color.fromARGB(255, 226, 225, 225)),
+                            minimumSize: WidgetStatePropertyAll(Size(220, 70)),
+                            shape:
+                                WidgetStatePropertyAll(RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            )))),
+                        child: const Text('Devam'),
+                      ),
                     ),
                     Expanded(
                       child: Center(

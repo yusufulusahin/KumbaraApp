@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => Homescreen(),
+              builder: (context) => HomeScreen(),
             ));
       } else {
         showCustomSnackBar(context, 'Telefon no Veya Şifre Hatalı!');
