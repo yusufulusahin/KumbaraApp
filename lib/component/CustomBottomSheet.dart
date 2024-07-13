@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:testt/component/CustomSnackBar.dart';
 import 'package:testt/model/qr_model.dart';
 
@@ -70,25 +69,34 @@ class _CustombottomsheetState extends State<Custombottomsheet> {
                       value!.isEmpty ? 'Boş Bırakılamaz!' : null,
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formkey.currentState!.validate()) {
-                      BoxModel model = BoxModel(
-                        barcode: widget.barcode,
-                        baslik: _baslikController.text,
-                        aciklama: _aciklamaController.text,
-                        konum: _konumController.text,
-                      );
-                      saveBarcode(model);
-                    }
-                  },
-                  child: const SizedBox(
-                    child: Text(
-                      'Save',
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('İptal')),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formkey.currentState!.validate()) {
+                          BoxModel model = BoxModel(
+                            barcode: widget.barcode,
+                            baslik: _baslikController.text,
+                            aciklama: _aciklamaController.text,
+                            konum: _konumController.text,
+                          );
+                          saveBarcode(model);
+                        }
+                      },
+                      child: const SizedBox(
+                        child: Text(
+                          'Save',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),

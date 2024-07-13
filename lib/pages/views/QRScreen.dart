@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:testt/component/CustomSnackBar.dart';
-
 import '../../component/CustomBottomSheet.dart';
 import 'ResultScreen.dart';
 
@@ -15,7 +14,9 @@ class Qrscreen extends StatefulWidget {
 
 class _QrscreenState extends State<Qrscreen> {
   MobileScannerController scannerController = MobileScannerController();
-  late final String barcode;
+  bool isCameraActive = true;
+  bool isBottomSheetOpen = false;
+  String? barcode;
 
   Future<void> checkBarcode(String barcode) async {
     var doc = await FirebaseFirestore.instance
@@ -25,7 +26,7 @@ class _QrscreenState extends State<Qrscreen> {
 
     if (doc.docs.isNotEmpty) {
       var dokuman = doc.docs[0];
-      //Barkod No Bulunursa
+      // Barkod No Bulunursa
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -35,31 +36,59 @@ class _QrscreenState extends State<Qrscreen> {
               aciklama: dokuman['aciklama'],
               konum: dokuman['konum'],
             ),
-          ));
+          )).then((_) {
+        // Sayfadan geri dönüldüğünde kamerayı yeniden başlat
+        scannerController.start();
+        setState(() {
+          this.barcode = null; // Barcode değerini sıfırlama
+        });
+      });
     } else {
-      //Barkod No Bulunmazsa
-
+      // Barkod No Bulunmazsa
+      setState(() {
+        isBottomSheetOpen = true;
+      });
       showModalBottomSheet(
         context: context,
         builder: (context) => Custombottomsheet(barcode: barcode),
         isScrollControlled: true,
-      );
+      ).whenComplete(() {
+        setState(() {
+          isBottomSheetOpen = false;
+          this.barcode = null; // Barcode değerini sıfırlama
+        });
+        // BottomSheet kapandığında kamerayı yeniden başlat
+        scannerController.start();
+      });
     }
+  }
+
+  void _cameraActive() {
+    if (isCameraActive) {
+      scannerController.stop();
+    } else {
+      scannerController.start();
+      setState(() {
+        barcode = null; // Barcode değerini sıfırlama
+      });
+    }
+    setState(() {
+      isCameraActive = !isCameraActive;
+    });
   }
 
   void _onDetect(BarcodeCapture barcodeCapture) async {
     final List<Barcode> barcodes = barcodeCapture.barcodes;
-    if (barcodes.isNotEmpty) {
+    if (barcodes.isNotEmpty && !isBottomSheetOpen) {
       final String code = barcodes.first.rawValue ?? "Kod Bulunamadı";
-      if (code.isNotEmpty) {
+      if (code.isNotEmpty && barcode != code) {
         scannerController.stop();
-        barcode = code;
-
-        await checkBarcode(barcode);
+        setState(() {
+          barcode = code;
+        });
+        await checkBarcode(code);
       }
       showCustomSnackBar(context, 'Tarama Sonucu $code');
-
-      print('$barcode');
     }
   }
 
@@ -78,11 +107,25 @@ class _QrscreenState extends State<Qrscreen> {
         elevation: 0.0,
       ),
       body: MobileScanner(controller: scannerController, onDetect: _onDetect),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          scannerController.toggleTorch();
-        },
-        child: const Icon(Icons.flash_on),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 30.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              heroTag: 'cameraButton', // Benzersiz heroTag ekledik
+              onPressed: _cameraActive,
+              child: Icon(isCameraActive ? Icons.camera : Icons.camera_alt),
+            ),
+            FloatingActionButton(
+              heroTag: 'torchButton', // Benzersiz heroTag ekledik
+              onPressed: () {
+                scannerController.toggleTorch();
+              },
+              child: const Icon(Icons.flash_on),
+            ),
+          ],
+        ),
       ),
     );
   }

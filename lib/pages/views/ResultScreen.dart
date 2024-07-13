@@ -20,17 +20,92 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(child: Text(widget.barcode)),
-          Expanded(child: Text(widget.baslik)),
-          Expanded(child: Text(widget.aciklama)),
-          Expanded(child: Text(widget.konum)),
-          Expanded(
-              child: SizedBox(
-            child: ElevatedButton(onPressed: () {}, child: const Text('Topla')),
-          ))
-        ],
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Barkod No: ', style: TextStyle(fontSize: 30)),
+                      Text(widget.barcode, style: TextStyle(fontSize: 30)),
+                    ],
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Başlık: ', style: TextStyle(fontSize: 30)),
+                      Text(widget.baslik, style: TextStyle(fontSize: 30)),
+                    ],
+                  )),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(),
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: [
+                        Text('Açıklama: ', style: TextStyle(fontSize: 30)),
+                        Text(
+                          textAlign: TextAlign.center,
+                          widget.aciklama,
+                          style: TextStyle(fontSize: 20),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      children: [
+                        Text('Konum: ', style: TextStyle(fontSize: 30)),
+                        Text(widget.konum, style: TextStyle(fontSize: 20)),
+                      ],
+                    ),
+                  )),
+            ),
+            SizedBox(
+              child:
+                  ElevatedButton(onPressed: () {}, child: const Text('Topla')),
+            )
+          ],
+        ),
       ),
     );
   }
