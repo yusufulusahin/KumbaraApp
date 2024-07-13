@@ -1,11 +1,10 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:testt/component/CustomSnackBar.dart';
 
-import 'QRResultScreen.dart';
+import '../../component/CustomBottomSheet.dart';
+import 'ResultScreen.dart';
 
 class Qrscreen extends StatefulWidget {
   const Qrscreen({super.key});
@@ -16,18 +15,51 @@ class Qrscreen extends StatefulWidget {
 
 class _QrscreenState extends State<Qrscreen> {
   MobileScannerController scannerController = MobileScannerController();
+  late final String barcode;
 
-  @override
-  void initState() {
-    //this._screenWasOpened();
-    super.initState();
+  Future<void> checkBarcode(String barcode) async {
+    var doc = await FirebaseFirestore.instance
+        .collection('QrCodes')
+        .where('barcode', isEqualTo: barcode)
+        .get();
+
+    if (doc.docs.isNotEmpty) {
+      var dokuman = doc.docs[0];
+      //Barkod No Bulunursa
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultScreen(
+              barcode: barcode,
+              baslik: dokuman['baslik'],
+              aciklama: dokuman['aciklama'],
+              konum: dokuman['konum'],
+            ),
+          ));
+    } else {
+      //Barkod No Bulunmazsa
+
+      showModalBottomSheet(
+        context: context,
+        builder: (context) => Custombottomsheet(barcode: barcode),
+        isScrollControlled: true,
+      );
+    }
   }
 
-  void _onDetect(BarcodeCapture barcodeCapture) {
+  void _onDetect(BarcodeCapture barcodeCapture) async {
     final List<Barcode> barcodes = barcodeCapture.barcodes;
     if (barcodes.isNotEmpty) {
       final String code = barcodes.first.rawValue ?? "Kod Bulunamadı";
+      if (code.isNotEmpty) {
+        scannerController.stop();
+        barcode = code;
+
+        await checkBarcode(barcode);
+      }
       showCustomSnackBar(context, 'Tarama Sonucu $code');
+
+      print('$barcode');
     }
   }
 
@@ -50,7 +82,7 @@ class _QrscreenState extends State<Qrscreen> {
         onPressed: () {
           scannerController.toggleTorch();
         },
-        child: Icon(Icons.flash_on),
+        child: const Icon(Icons.flash_on),
       ),
     );
   }
