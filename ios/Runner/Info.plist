@@ -45,5 +45,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Uygulamamın QR okutma amacıyla Kamera erişimine ihtiyacı vardır.</string>
 </dict>
 </plist>
