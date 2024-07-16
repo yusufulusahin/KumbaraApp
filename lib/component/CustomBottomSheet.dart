@@ -50,49 +50,84 @@ class _CustombottomsheetState extends State<Custombottomsheet> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Başlık'),
-                  controller: _baslikController,
-                  validator: (value) =>
-                      value!.isEmpty ? 'Boş Bırakılamaz!' : null,
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    decoration: const InputDecoration(labelText: 'Başlık'),
+                    controller: _baslikController,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Boş Bırakılamaz!' : null,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Açıklama'),
-                  controller: _aciklamaController,
-                  validator: (value) =>
-                      value!.isEmpty ? 'Boş Bırakılamaz!' : null,
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    decoration: const InputDecoration(labelText: 'Açıklama'),
+                    controller: _aciklamaController,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Boş Bırakılamaz!' : null,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Konum'),
-                  controller: _konumController,
-                  validator: (value) =>
-                      value!.isEmpty ? 'Boş Bırakılamaz!' : null,
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    decoration: const InputDecoration(labelText: 'Konum'),
+                    controller: _konumController,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Boş Bırakılamaz!' : null,
+                  ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ElevatedButton(
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ElevatedButton(
+                        style: const ButtonStyle(
+                            shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(20))))),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.of(context).pop();
                         },
-                        child: Text('İptal')),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formkey.currentState!.validate()) {
-                          BoxModel model = BoxModel(
-                            barcode: widget.barcode,
-                            baslik: _baslikController.text,
-                            aciklama: _aciklamaController.text,
-                            konum: _konumController.text,
-                          );
-                          saveBarcode(model);
-                        }
-                      },
-                      child: const SizedBox(
-                        child: Text(
-                          'Save',
-                          style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
+                        child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(
+                            'İptal',
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ElevatedButton(
+                        style: const ButtonStyle(
+                            shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(20))))),
+                        onPressed: () {
+                          if (_formkey.currentState!.validate()) {
+                            BoxModel model = BoxModel(
+                              barcode: widget.barcode,
+                              baslik: _baslikController.text,
+                              aciklama: _aciklamaController.text,
+                              konum: _konumController.text,
+                            );
+                            saveBarcode(model);
+                          }
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(
+                            'Kaydet',
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     ),
