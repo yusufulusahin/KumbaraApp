@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 
-import 'package:app_set_id/app_set_id.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:testt/pages/views/GetPasswordScreen.dart';
@@ -12,7 +11,8 @@ import '../../model/il-ilce-model.dart';
 import '../../model/users_model.dart';
 
 class SigninScreen extends StatefulWidget {
-  const SigninScreen({super.key});
+  const SigninScreen({super.key, required this.cihazid});
+  final String cihazid;
 
   @override
   State<SigninScreen> createState() => _SigninScreenState();
@@ -24,7 +24,6 @@ TextEditingController konumilController = TextEditingController();
 TextEditingController konumilceController = TextEditingController();
 
 class _SigninScreenState extends State<SigninScreen> {
-  String _cihazid = 'Cihaz Kimliği Alınıyor';
   late final Users users;
   final formKey = GlobalKey<FormState>();
   String? secileIl;
@@ -50,7 +49,7 @@ class _SigninScreenState extends State<SigninScreen> {
               telNo: telnoController.text,
               il: secileIl!,
               ilce: secilenIlce!,
-              cihazid: _cihazid),
+              cihazid: widget.cihazid),
         ));
   }
 
@@ -63,21 +62,10 @@ class _SigninScreenState extends State<SigninScreen> {
     }
   }
 
-  //CİHAZ_İD ALMA
-  Future<String?> _getDeviceId(String cihazid) async {
-    cihazid = (await AppSetId().getIdentifier())!;
-    print('cihaz id $cihazid');
-    _cihazid = cihazid;
-    return _cihazid;
-  }
-
   //İNİT ETMEMİZİ SAĞLAR
   @override
   void initState() {
     loadililceData();
-
-    _getDeviceId(_cihazid);
-
     super.initState();
   }
 

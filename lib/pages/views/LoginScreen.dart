@@ -1,3 +1,4 @@
+import 'package:app_set_id/app_set_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,16 +16,33 @@ class LoginScreen extends StatefulWidget {
 TextEditingController tellnoController = TextEditingController();
 TextEditingController pasController = TextEditingController();
 String _girisYap = 'Giriş Yap';
+final String cihazid = 'Cihaz id Alınıyor';
 
 class _LoginScreenState extends State<LoginScreen> {
   late String telno, sifre;
   final _formkey = GlobalKey<FormState>();
-  Future<void> loginUser(String telNo, String sifre) async {
+
+  @override
+  void initState() {
+    _getDeviceId(cihazid);
+    print(cihazid);
+    super.initState();
+  }
+
+  Future<String?> _getDeviceId(String cihazid) async {
+    cihazid = (await AppSetId().getIdentifier())!;
+    print('cihaz id $cihazid');
+    cihazid = cihazid;
+    return cihazid;
+  }
+
+  Future<void> loginUser(String telNo, String sifre, String cihazid) async {
     try {
       var userQuery = await FirebaseFirestore.instance
           .collection('AppUsers')
           .where('telNo', isEqualTo: telNo)
           .where('sifre', isEqualTo: sifre)
+          .where('cihazid', isEqualTo: cihazid)
           .get();
 
       if (userQuery.docs.isNotEmpty) {
@@ -42,9 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print('Giriş Başarısız $e');
     }
+    //BURAYA CİHAZ İD UYARMASINI EKLE
   }
-
-  //BU CİHAZIN İD'Sİ İLE KAYIT OLANLAR SADECE BU CİHAZDAN GİRİŞ YAPABİLSİN.
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (_formkey.currentState?.validate() ?? false) {
                           _formkey.currentState?.save();
                           print('$telno ve $sifre');
-                          await loginUser(telno, sifre);
+                          await loginUser(telno, sifre, cihazid);
                         }
                       },
                       style: const ButtonStyle(
@@ -156,8 +173,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SigninScreen()),
+                                        builder: (context) => SigninScreen(
+                                              cihazid: cihazid,
+                                            )),
                                     (Route<dynamic> route) => false,
                                   );
                                 },
