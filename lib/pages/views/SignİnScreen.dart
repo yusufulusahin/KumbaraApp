@@ -83,7 +83,8 @@ class _SigninScreenState extends State<SigninScreen> {
             Expanded(
               flex: 2,
               child: Center(
-                child: Text('Hoş geldiniz !',
+                child: Text('KUMBARA TAKİP',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
                         .displayLarge!

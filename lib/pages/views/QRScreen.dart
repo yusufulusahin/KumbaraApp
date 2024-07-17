@@ -14,7 +14,7 @@ class Qrscreen extends StatefulWidget {
 
 class _QrscreenState extends State<Qrscreen> {
   MobileScannerController scannerController = MobileScannerController();
-  bool isCameraActive = true;
+  bool isCameraActive = false;
   bool isBottomSheetOpen = false;
   String? barcode;
 
@@ -106,26 +106,36 @@ class _QrscreenState extends State<Qrscreen> {
         ),
         elevation: 0.0,
       ),
-      body: MobileScanner(controller: scannerController, onDetect: _onDetect),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 30.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FloatingActionButton(
-              heroTag: 'cameraButton', // Benzersiz heroTag ekledik
-              onPressed: _cameraActive,
-              child: Icon(isCameraActive ? Icons.camera : Icons.camera_alt),
+      body: Column(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Center(
+              child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: MobileScanner(
+                      controller: scannerController, onDetect: _onDetect)),
             ),
-            FloatingActionButton(
-              heroTag: 'torchButton', // Benzersiz heroTag ekledik
-              onPressed: () {
-                scannerController.toggleTorch();
-              },
-              child: const Icon(Icons.flash_on),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                  style: const ButtonStyle(
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10))))),
+                  onPressed: _cameraActive,
+                  child: Text(
+                    isCameraActive ? "Kamera'yı Kapat!" : "Kamera'yı Aç!",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 40, fontWeight: FontWeight.bold),
+                  )),
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'package:testt/component/CustomSnackBar.dart';
 import 'package:testt/model/qr_model.dart';
 
 class Custombottomsheet extends StatefulWidget {
-  const Custombottomsheet({Key? key, required this.barcode}) : super(key: key);
+  const Custombottomsheet({super.key, required this.barcode});
   final String barcode;
 
   @override

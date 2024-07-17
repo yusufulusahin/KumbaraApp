@@ -2,9 +2,12 @@ import 'package:app_set_id/app_set_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testt/component/CustomSnackBar.dart';
 import 'package:testt/pages/views/HomeScreen.dart';
 import 'package:testt/pages/views/Sign%C4%B0nScreen.dart';
+
+import '../../model/users_model.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,24 +19,30 @@ class LoginScreen extends StatefulWidget {
 TextEditingController tellnoController = TextEditingController();
 TextEditingController pasController = TextEditingController();
 String _girisYap = 'Giriş Yap';
-final String cihazid = 'Cihaz id Alınıyor';
 
 class _LoginScreenState extends State<LoginScreen> {
+  String _cihazid = '';
   late String telno, sifre;
   final _formkey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    _getDeviceId(cihazid);
-    print(cihazid);
+    _getDeviceId(_cihazid);
+    print(_cihazid);
     super.initState();
   }
 
   Future<String?> _getDeviceId(String cihazid) async {
     cihazid = (await AppSetId().getIdentifier())!;
     print('cihaz id $cihazid');
-    cihazid = cihazid;
-    return cihazid;
+    _cihazid = cihazid;
+    return _cihazid;
+  }
+
+  Future<void> saveUserData(Users user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('telNo', telno);
+    await prefs.setString('sifre', sifre);
   }
 
   Future<void> loginUser(String telNo, String sifre, String cihazid) async {
@@ -46,12 +55,22 @@ class _LoginScreenState extends State<LoginScreen> {
           .get();
 
       if (userQuery.docs.isNotEmpty) {
-        //
         print('Kullanıcı başarı ile giriş yaptı');
+        //KULLANICI VERİLERİNİ KAYDEDER.
+        await saveUserData(Users(
+            adSoyad: '',
+            telNo: telNo,
+            il: '',
+            ilce: '',
+            sifre: sifre,
+            cihazid: cihazid));
+
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => HomeScreen(
+                telNo: telNo,
+              ),
             ));
       } else {
         showCustomSnackBar(context, 'Telefon no Veya Şifre Hatalı!');
@@ -78,7 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
               Expanded(
                 flex: 2,
                 child: Center(
-                  child: Text('Hoş geldiniz !',
+                  child: Text('KUMBARA TAKİP',
+                      textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
                           .displayLarge!
@@ -142,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (_formkey.currentState?.validate() ?? false) {
                           _formkey.currentState?.save();
                           print('$telno ve $sifre');
-                          await loginUser(telno, sifre, cihazid);
+                          await loginUser(telno, sifre, _cihazid);
                         }
                       },
                       style: const ButtonStyle(
@@ -174,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SigninScreen(
-                                              cihazid: cihazid,
+                                              cihazid: _cihazid,
                                             )),
                                     (Route<dynamic> route) => false,
                                   );
