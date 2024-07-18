@@ -25,6 +25,12 @@ TextEditingController konumilceController = TextEditingController();
 TextEditingController sifreController = TextEditingController();
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String? cihazid;
+  final formKey = GlobalKey<FormState>();
+  String? secileIl;
+  String? secilenIlce;
+  List<Ililce> ililceList = [];
+
   Future<Users?> _getData(String telNo) async {
     try {
       var userss = await FirebaseFirestore.instance
@@ -48,6 +54,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         konumilceController.text = user.ilce;
         sifreController.text = user.sifre;
 
+        cihazid = user.cihazid;
+
         print(user);
 
         return user;
@@ -60,11 +68,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     return null;
   }
-
-  final formKey = GlobalKey<FormState>();
-  String? secileIl;
-  String? secilenIlce;
-  List<Ililce> ililceList = [];
 
   List<String> get ilceler {
     if (secileIl != null) {
@@ -90,9 +93,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
   }
 
-  Future<void> updateUser(String tel) async {
+  String? ililcefark(String a) {
+    if (a == konumilController) {
+      return konumilController.text;
+    } else {
+      return a;
+    }
+  }
+
+  String? ilcefark(String a) {
+    if (a == konumilceController.text) {
+      return konumilceController.text;
+    } else {
+      return a;
+    }
+  }
+
+  Future<void> updateUser(String cihazid) async {
     try {
-      var userRef = FirebaseFirestore.instance.collection('AppUsers').doc(tel);
+      var userRef =
+          FirebaseFirestore.instance.collection('AppUsers').doc(cihazid);
 
       await userRef.update({
         'tamAd': adSoyadController.text,
@@ -317,7 +337,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(20))))),
                             onPressed: () {
-                              updateUser(widget.phonenumber);
+                              updateUser(cihazid!);
                             },
                             child: const Text('K A Y D E T')),
                       )

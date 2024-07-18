@@ -69,7 +69,7 @@ class _GetPasswordScreenState extends State<GetPasswordScreen> {
 
       await FirebaseFirestore.instance
           .collection('AppUsers')
-          .doc(user.telNo)
+          .doc(user.cihazid)
           .set(user.toJson());
       showCustomSnackBar(context, 'kullanıcı Başarı ile Kaydedildi!');
       print('Kullanıcı başarı ile kaydedildi.');
