@@ -18,6 +18,12 @@ class _QrscreenState extends State<Qrscreen> {
   bool isBottomSheetOpen = false;
   String? barcode;
 
+  @override
+  void initState() {
+    super.initState();
+    scannerController.stop();
+  }
+
   Future<void> checkBarcode(String barcode) async {
     var doc = await FirebaseFirestore.instance
         .collection('QrCodes')
@@ -114,8 +120,20 @@ class _QrscreenState extends State<Qrscreen> {
               child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.4,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  child: MobileScanner(
-                      controller: scannerController, onDetect: _onDetect)),
+                  child: isCameraActive
+                      ? MobileScanner(
+                          controller: scannerController, onDetect: _onDetect)
+                      : Container(
+                          color: Colors.black,
+                          child: const Center(
+                              child: Text(
+                            'Kamera Kapalı!',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold),
+                          )),
+                        )),
             ),
           ),
           Expanded(

@@ -3,8 +3,8 @@ class Users {
   late final String telNo;
   late final String il;
   late final String ilce;
-  final String sifre;
-  final String cihazid;
+  late final String sifre;
+  late final String cihazid;
 
   Users(
       {required this.adSoyad,
