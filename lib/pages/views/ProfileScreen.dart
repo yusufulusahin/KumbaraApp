@@ -126,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Expanded(
               flex: 3,
               child: Padding(
-                padding: const EdgeInsets.only(top: 50.0),
+                padding: const EdgeInsets.only(top: 60.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
