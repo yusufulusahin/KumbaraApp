@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:testt/component/Colors.dart';
 import 'package:testt/component/CustomSnackBar.dart';
 import 'package:testt/pages/views/HomeScreen.dart';
 import 'package:testt/pages/views/Sign%C4%B0nScreen.dart';
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 226, 225, 225),
+      backgroundColor: UsedColors().backgrounColors,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();

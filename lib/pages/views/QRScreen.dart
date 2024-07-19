@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:testt/component/Colors.dart';
 import 'package:testt/component/CustomSnackBar.dart';
 import '../../component/CustomBottomSheet.dart';
 import 'ResultScreen.dart';
@@ -101,8 +102,9 @@ class _QrscreenState extends State<Qrscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.5),
+      backgroundColor: UsedColors().backgrounColors,
       appBar: AppBar(
+        backgroundColor: UsedColors().backgrounColors,
         title: const Padding(
           padding: EdgeInsets.only(bottom: 20),
           child: Text(
@@ -117,23 +119,29 @@ class _QrscreenState extends State<Qrscreen> {
           Expanded(
             flex: 3,
             child: Center(
-              child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: isCameraActive
-                      ? MobileScanner(
-                          controller: scannerController, onDetect: _onDetect)
-                      : Container(
-                          color: Colors.black,
-                          child: const Center(
-                              child: Text(
-                            'Kamera Kapalı!',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: isCameraActive
+                        ? MobileScanner(
+                            controller: scannerController, onDetect: _onDetect)
+                        : Container(
+                            decoration: BoxDecoration(
+                                color: UsedColors().cameraColors,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(20))),
+                            child: const Center(
+                                child: Text(
+                              'Kamera Kapalı!',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold),
+                            )),
                           )),
-                        )),
+              ),
             ),
           ),
           Expanded(

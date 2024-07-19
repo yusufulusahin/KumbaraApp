@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:testt/component/Colors.dart';
 import 'package:testt/pages/views/QRScreen.dart';
 
 import 'ProfileScreen.dart';
@@ -32,7 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: UsedColors().backgrounColors,
+      ),
       body: PageView(
         controller: _pageController,
         onPageChanged: (value) {
