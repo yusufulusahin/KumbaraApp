@@ -119,14 +119,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   .copyWith(fontWeight: FontWeight.bold)),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 100.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              Expanded(
-                flex: 3,
+      body: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -206,60 +206,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    child: ElevatedButton(
-                        style: const ButtonStyle(
-                            shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(20))))),
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            updateUser(cihazid!);
-                          }
-                        },
-                        child: Text(
-                          'K A Y D E T',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        )),
-                  ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  child: ElevatedButton(
+                      style: const ButtonStyle(
+                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))))),
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          updateUser(cihazid!);
+                        }
+                      },
+                      child: Text(
+                        'K A Y D E T',
+                        style: Theme.of(context)
+                            .textTheme
+                            .displaySmall!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      )),
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    child: ElevatedButton(
-                        style: const ButtonStyle(
-                            shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(20))))),
-                        onPressed: () {
-                          _logout();
-                        },
-                        child: Text(
-                          'Ç I K I Ş  Y A P ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        )),
-                  ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  child: ElevatedButton(
+                      style: const ButtonStyle(
+                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))))),
+                      onPressed: () {
+                        _logout();
+                      },
+                      child: Text(
+                        'Ç I K I Ş  Y A P ',
+                        style: Theme.of(context)
+                            .textTheme
+                            .displaySmall!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      )),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
