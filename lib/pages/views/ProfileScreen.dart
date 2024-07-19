@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,8 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testt/component/Colors.dart';
 import 'package:testt/component/CustomSnackBar.dart';
 import 'package:testt/pages/views/LoginScreen.dart';
-
-import '../../model/il-ilce-model.dart';
 import '../../model/users_model.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,10 +17,10 @@ class ProfileScreen extends StatefulWidget {
 
 TextEditingController adSoyadController = TextEditingController();
 TextEditingController telnoController = TextEditingController();
-
 TextEditingController sifreController = TextEditingController();
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool isNotVisible = true;
   String? cihazid;
   final formKey = GlobalKey<FormState>();
 
@@ -47,9 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         adSoyadController.text = user.adSoyad;
         telnoController.text = user.telNo;
-
         sifreController.text = user.sifre;
-
         cihazid = user.cihazid;
 
         print(user);
@@ -64,10 +58,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return null;
   }
 
+  void changeVisibilty() {
+    setState(() {
+      isNotVisible = !isNotVisible;
+    });
+  }
+
   @override
   void initState() {
     _getData(widget.phonenumber);
-
     super.initState();
   }
 
@@ -124,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             Expanded(
-              flex: 3,
+              flex: 5,
               child: Padding(
                 padding: const EdgeInsets.only(top: 60.0),
                 child: Column(
@@ -134,6 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.only(
                           left: 20.0, right: 20, bottom: 20),
                       child: TextFormField(
+                        style: Theme.of(context).textTheme.headlineLarge,
                         autocorrect: false,
                         validator: (value) {
                           if (value!.isEmpty || value.length < 5) {
@@ -157,32 +157,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 20.0, right: 20, bottom: 20),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        autocorrect: false,
-                        validator: (value) {
-                          if (value!.isEmpty || value.length != 4) {
-                            if (value.isEmpty) {
-                              return 'Sifre Boş Geçilemez!';
+                      child: SizedBox(
+                        width: 200,
+                        child: TextFormField(
+                          style: Theme.of(context).textTheme.headlineLarge,
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.number,
+                          autocorrect: false,
+                          validator: (value) {
+                            if (value!.isEmpty || value.length != 4) {
+                              if (value.isEmpty) {
+                                return 'Sifre Boş Geçilemez!';
+                              } else {
+                                return 'Şifre 4 Karakter Olmalıdır!';
+                              }
                             } else {
-                              return 'Şifre 4 Karakter Olmalıdır!';
+                              return null;
                             }
-                          } else {
-                            return null;
-                          }
-                        },
-                        controller: sifreController,
-                        decoration: const InputDecoration(
-                            hintText: 'Şifre',
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)))),
+                          },
+                          controller: sifreController,
+                          obscureText: isNotVisible,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: changeVisibilty,
+                                  icon: isNotVisible
+                                      ? const Icon(
+                                          Icons.visibility_off_outlined)
+                                      : const Icon(Icons.visibility)),
+                              hintText: 'Şifre',
+                              border: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)))),
+                        ),
                       ),
                     ),
                     //TELEFON NO BÖLÜMÜ
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0, right: 20),
                       child: TextFormField(
+                        style: Theme.of(context).textTheme.headlineMedium,
                         validator: (value) {
                           if (value!.length != 10) {
                             return 'Lütfen 10 Haneli Telefon Numarası Giriniz!';
@@ -211,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: ElevatedButton(
                       style: const ButtonStyle(
@@ -237,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: ElevatedButton(
                       style: const ButtonStyle(
