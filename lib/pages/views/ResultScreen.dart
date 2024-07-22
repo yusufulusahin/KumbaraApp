@@ -15,27 +15,26 @@ class ResultScreen extends StatefulWidget {
   final String aciklama;
   final String konum;
   final int tahminiDolumSuresi;
-  final List<DateTime> kumbaraBosaltmaTarihleri;
+  final List<Timestamp> kumbaraBosaltmaTarihleri;
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  late DateTime lastEmptyDate;
-  late int daysLeft;
+  int daysLeft = 0;
 
   @override
   void initState() {
     super.initState();
-    lastEmptyDate = widget.kumbaraBosaltmaTarihleri.isNotEmpty
-        ? widget.kumbaraBosaltmaTarihleri.last
-        : DateTime.now();
     calculateDaysLeft();
   }
 
   void calculateDaysLeft() {
     final now = DateTime.now();
+    final lastEmptyDate = widget.kumbaraBosaltmaTarihleri.isNotEmpty
+        ? widget.kumbaraBosaltmaTarihleri.last.toDate()
+        : now;
     final difference = now.difference(lastEmptyDate).inDays;
     setState(() {
       daysLeft = widget.tahminiDolumSuresi - difference;
@@ -50,13 +49,13 @@ class _ResultScreenState extends State<ResultScreen> {
         .collection('QrCodes')
         .doc(widget.barcode)
         .update({
-      'sonBosaltimTarihleri': FieldValue.arrayUnion([now]),
+      'kumbaraBosaltmaTarihleri': FieldValue.arrayUnion([now]),
       'tahminiDolumSuresi': widget.tahminiDolumSuresi,
     });
 
     setState(() {
       // Ekranı güncelle
-      widget.kumbaraBosaltmaTarihleri.add(now);
+      widget.kumbaraBosaltmaTarihleri.add(Timestamp.fromDate(now));
       calculateDaysLeft(); // Tahmini dolum süresi güncelle
     });
   }
@@ -136,7 +135,8 @@ class _ResultScreenState extends State<ResultScreen> {
                           const Text('Son Boşaltım Tarihleri:',
                               style: TextStyle(fontSize: 20)),
                           const SizedBox(height: 10),
-                          ...widget.kumbaraBosaltmaTarihleri.map((date) {
+                          ...widget.kumbaraBosaltmaTarihleri.map((timestamp) {
+                            final date = timestamp.toDate();
                             final formattedDate =
                                 '${date.day}/${date.month}/${date.year}';
                             return Text(formattedDate,

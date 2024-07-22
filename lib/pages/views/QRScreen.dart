@@ -33,12 +33,12 @@ class _QrscreenState extends State<Qrscreen> {
 
     if (doc.docs.isNotEmpty) {
       var dokuman = doc.docs[0];
-      List<DateTime> kumbaraBosaltmaTarihleri = [];
-      if (dokuman['kumbaraBosaltmaTarihleri'] != null) {
-        kumbaraBosaltmaTarihleri = (dokuman['kumbaraBosaltmaTarihleri'] as List)
-            .map((e) => DateTime.parse(e))
-            .toList();
-      }
+
+      final kumbaraBosaltmaTarihleri =
+          (dokuman['kumbaraBosaltmaTarihleri'] as List)
+              .map((e) => e as Timestamp)
+              .toList();
+
       // Barkod No Bulunursa
       Navigator.push(
           context,
