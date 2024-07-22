@@ -33,6 +33,12 @@ class _QrscreenState extends State<Qrscreen> {
 
     if (doc.docs.isNotEmpty) {
       var dokuman = doc.docs[0];
+      List<DateTime> kumbaraBosaltmaTarihleri = [];
+      if (dokuman['kumbaraBosaltmaTarihleri'] != null) {
+        kumbaraBosaltmaTarihleri = (dokuman['kumbaraBosaltmaTarihleri'] as List)
+            .map((e) => DateTime.parse(e))
+            .toList();
+      }
       // Barkod No Bulunursa
       Navigator.push(
           context,
@@ -42,6 +48,8 @@ class _QrscreenState extends State<Qrscreen> {
               baslik: dokuman['baslik'],
               aciklama: dokuman['aciklama'],
               konum: dokuman['konum'],
+              tahminiDolumSuresi: dokuman['tahminiDolumSuresi'],
+              kumbaraBosaltmaTarihleri: kumbaraBosaltmaTarihleri,
             ),
           )).then((_) {
         // Sayfadan geri dönüldüğünde kamerayı yeniden başlat

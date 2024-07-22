@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -6,17 +7,60 @@ class ResultScreen extends StatefulWidget {
       required this.barcode,
       required this.baslik,
       required this.aciklama,
-      required this.konum});
+      required this.konum,
+      required this.tahminiDolumSuresi,
+      required this.kumbaraBosaltmaTarihleri});
   final String barcode;
   final String baslik;
   final String aciklama;
   final String konum;
+  final int tahminiDolumSuresi;
+  final List<DateTime> kumbaraBosaltmaTarihleri;
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  late DateTime lastEmptyDate;
+  late int daysLeft;
+
+  @override
+  void initState() {
+    super.initState();
+    lastEmptyDate = widget.kumbaraBosaltmaTarihleri.isNotEmpty
+        ? widget.kumbaraBosaltmaTarihleri.last
+        : DateTime.now();
+    calculateDaysLeft();
+  }
+
+  void calculateDaysLeft() {
+    final now = DateTime.now();
+    final difference = now.difference(lastEmptyDate).inDays;
+    setState(() {
+      daysLeft = widget.tahminiDolumSuresi - difference;
+      if (daysLeft < 0) daysLeft = 0;
+    });
+  }
+
+  Future<void> topla() async {
+    // Boşaltım işlemi burada yapılacak
+    final now = DateTime.now();
+    FirebaseFirestore.instance
+        .collection('QrCodes')
+        .doc(widget.barcode)
+        .update({
+      'sonBosaltimTarihleri': FieldValue.arrayUnion([now]),
+      'tahminiDolumSuresi': widget.tahminiDolumSuresi,
+    });
+
+    setState(() {
+      // Ekranı güncelle
+      widget.kumbaraBosaltmaTarihleri.add(now);
+      calculateDaysLeft(); // Tahmini dolum süresi güncelle
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +130,18 @@ class _ResultScreenState extends State<ResultScreen> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 4,
                           ),
+                          Text('Tahmini Doluma Kalan Süre: $daysLeft gün',
+                              style: const TextStyle(fontSize: 20)),
+                          const SizedBox(height: 20),
+                          const Text('Son Boşaltım Tarihleri:',
+                              style: TextStyle(fontSize: 20)),
+                          const SizedBox(height: 10),
+                          ...widget.kumbaraBosaltmaTarihleri.map((date) {
+                            final formattedDate =
+                                '${date.day}/${date.month}/${date.year}';
+                            return Text(formattedDate,
+                                style: const TextStyle(fontSize: 18));
+                          }).toList(),
                         ],
                       ),
                     ),
@@ -121,7 +177,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))))),
-                      onPressed: () {},
+                      onPressed: topla,
                       child: const Text('Topla')),
                 ),
               )

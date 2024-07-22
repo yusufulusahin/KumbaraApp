@@ -18,6 +18,7 @@ class _CustombottomsheetState extends State<Custombottomsheet> {
   final TextEditingController _baslikController = TextEditingController();
   final TextEditingController _aciklamaController = TextEditingController();
   final TextEditingController _konumController = TextEditingController();
+  int _tahminiDolumSuresi = 0;
 
   Future<void> saveBarcode(BoxModel model) async {
     try {
@@ -77,6 +78,29 @@ class _CustombottomsheetState extends State<Custombottomsheet> {
                         value!.isEmpty ? 'Boş Bırakılamaz!' : null,
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: DropdownButtonFormField<int>(
+                    decoration: const InputDecoration(
+                        labelText: 'Tahmini Dolum Süresi (Gün)'),
+                    value: _tahminiDolumSuresi,
+                    items: List.generate(
+                      31,
+                      (index) => DropdownMenuItem(
+                        value: index,
+                        child: Text('$index gün'),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _tahminiDolumSuresi = value!;
+                      });
+                    },
+                    validator: (value) => value == null || value < 0
+                        ? 'Geçerli bir süre seçin'
+                        : null,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -117,6 +141,8 @@ class _CustombottomsheetState extends State<Custombottomsheet> {
                               baslik: _baslikController.text,
                               aciklama: _aciklamaController.text,
                               konum: _konumController.text,
+                              tahminiDolumSuresi: _tahminiDolumSuresi,
+                              kumbaraBosaltmaTarihleri: [],
                             );
                             saveBarcode(model);
                           }
